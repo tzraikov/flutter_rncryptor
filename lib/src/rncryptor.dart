@@ -124,7 +124,7 @@ class RNCryptor {
     }
   }
 
-  // Generates a 32 byte length key by using the specified password and a password salt.
+  /// Generates a 32 byte length key by using the specified password and a password salt.
   static Uint8List generateKey(String password, Uint8List salt) {
     var passwordBytes = Uint8List.fromList(password.codeUnits);
     var params = Pbkdf2Parameters(
@@ -134,7 +134,7 @@ class RNCryptor {
     return keyDerivator.process(passwordBytes);
   }
 
-  // Generates a random password salt with 8 bytes length.
+  /// Generates a random password salt with 8 bytes length.
   static Uint8List generateSalt() {
     return _generateIv(RNCryptorSettings.saltLength);
   }
