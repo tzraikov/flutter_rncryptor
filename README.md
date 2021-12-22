@@ -1,39 +1,46 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+## Flutter RNCryptor package
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+A high-level AES encryption/decryption library compatible with Rob Napier's [RNCryptor](https://github.com/RNCryptor/RNCryptor) for iOS. This implementation is based on [JSCryptor](https://github.com/chesstrian/JSCryptor) and uses [pointycastle](https://pub.dev/packages/pointycastle) under the hood.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+RNCryptor specification can be found [here](https://github.com/RNCryptor/RNCryptor-Spec).
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+First import it in your Dart code:
 
 ```dart
-const like = 'sample';
+import 'package:rncryptor/rncryptor.dart';
 ```
 
-## Additional information
+Using RNCryptor is simple, just call the *encrypt* method to encrypt your text by using the specified *password*:
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```dart
+var encrypted = RNCryptor.encrypt('my password', 'some plain text');
+```
+
+Call *decrypt* method to decrypt the encrypted text:
+
+```dart
+var encrypted = RNCryptor.decrypt('my password', 'an encrypted message');
+```
+
+Converting a password into a key is intentionally slow. In case your app encrypts/decrypts many short messages, using password would have a significant performance impact. In that case using keys would be preferred.
+
+Use the *generateKey* method to generate a new key from a password and a salt:
+
+```dart
+var salt = RNCryptor.generateSalt();
+var encryptKey = RNCryptor.generateKey('my password', salt);
+```
+
+RNCryptor uses two 256-bit (32 byte) length keys for encryption and authentication. The *encryptWithKey* method encrypts the message with the specified keys:
+
+```dart
+RNCryptor.encryptWithKey(encryptKey, hmacKey, 'some plain text');
+```
+
+Call the *decryptWithKey* method to decrypt a message encrypted with a known key:
+
+```dart
+RNCryptor.decryptWithKey(encryptKey, hmacKey, 'an encrypted message');
+```
